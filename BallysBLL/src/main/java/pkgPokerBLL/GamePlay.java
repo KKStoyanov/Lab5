@@ -29,6 +29,7 @@ public class GamePlay implements Serializable {
 	private UUID GameDealer = null;
 	private int[] iActOrder = null;
 	private Player PlayerNextToAct = null;
+	private int nextPlayerPos = 1;
 	private eDrawCount eDrawCountLast;
 	private eGameState eGameState;
 
@@ -151,7 +152,7 @@ public class GamePlay implements Serializable {
 		GameDeck = gameDeck;
 	}
 
-	public void drawCard(Player p, eCardDestination eCardDestination)  {
+	public void drawCard(Player p, eCardDestination eCardDestination) {
 		if (eCardDestination == eCardDestination.Player) {
 			this.getPlayerHand(p).AddToCardsInHand(this.getGameDeck().Draw());
 		} else if (eCardDestination == eCardDestination.Community) {
@@ -189,6 +190,25 @@ public class GamePlay implements Serializable {
 
 	public void seteDrawCountLast(eDrawCount eDrawCountLast) {
 		this.eDrawCountLast = eDrawCountLast;
+	}
+
+	public void DealRound() {
+		eDrawCountLast = eDrawCount.geteDrawCount(eDrawCountLast.getDrawNo() + 1);
+		CardDraw c = this.rle.GetDrawCard(eDrawCountLast);
+		int[] orderOfDraw = GamePlay.GetOrder(nextPlayerPos);
+		for (int i = 0; i < c.getCardCount().getCardCount(); i++) {
+			if (c.getCardDestination() == eCardDestination.Player) {
+				for (int drawPlayer : orderOfDraw) {
+					Player p1 = getPlayerByPosition(drawPlayer);
+					if (p1 != null) {
+						drawCard(p1, c.getCardDestination());
+					}
+				}
+			} else if (c.getCardDestination() == eCardDestination.Community) {
+				drawCard(PlayerCommon, c.getCardDestination());
+			}
+
+		}
 	}
 
 	public static int[] GetOrder(int iStartPosition) {

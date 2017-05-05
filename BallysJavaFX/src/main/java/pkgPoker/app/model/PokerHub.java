@@ -69,25 +69,24 @@ public class PokerHub extends Hub {
 			case StartGame:
 				// Get the rule from the Action object.
 				Rule rle = new Rule(act.geteGame());
+				Player Dealer = actPlayer;
 				
-				//TODO Lab #5 - If neither player has 'the button', pick a random player
-				//		and assign the button.				
-
-				//TODO Lab #5 - Start the new instance of GamePlay
+				HubGamePlay = new GamePlay(rle, Dealer.getPlayerID());
+				
+				HubGamePlay.setGamePlayers(HubPokerTable.getHmPlayer());
+				
 								
 				// Add Players to Game
 				
 				// Set the order of players
-				
+			    HubGamePlay.setiActOrder(GamePlay.GetOrder(Dealer.getiPlayerPosition()));
 
 
 			case Draw:
-
-				//TODO Lab #5 -	Draw card(s) for each player in the game.
-				//TODO Lab #5 -	Make sure to set the correct visiblity
-				//TODO Lab #5 -	Make sure to account for community cards
-
-				//TODO Lab #5 -	Check to see if the game is over
+				
+				HubGamePlay.DealRound();
+				
+				
 				HubGamePlay.isGameOver();
 				
 				resetOutput();
